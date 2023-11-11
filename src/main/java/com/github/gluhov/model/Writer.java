@@ -5,13 +5,20 @@ import java.util.List;
 public class Writer extends BaseEntity{
     private String firstName;
     private String lastName;
-    private List<Post> posts;
+    private List<Long> postsId;
 
-    public Writer(String firstName, String lastName, List<Post> posts, Status status) {
+    public Writer(String firstName, String lastName, List<Long> postsId, Status status) {
         super(status);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.posts = posts;
+        this.postsId = postsId;
+    }
+
+    public Writer() {
+    }
+
+    public Writer(Writer w) {
+        this(w.firstName, w.lastName, w.postsId, w.getStatus());
     }
 
     public String getFirstName() {
@@ -30,11 +37,11 @@ public class Writer extends BaseEntity{
         this.lastName = lastName;
     }
 
-    public List<Post> getPosts() {
-        return posts;
+    public List<Long> getPostsId() {
+        return postsId;
     }
 
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    public void setPostsId(List<Long> postsId) {
+        this.postsId = postsId;
     }
 }
