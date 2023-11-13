@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public abstract class BaseEntity {
     private static long idCounter = 0;
-    private Long id;
-    private Status status;
+    protected Long id;
+    protected Status status;
 
     public BaseEntity(Status status) {
         this.id = ++idCounter;

@@ -15,6 +15,7 @@ public class GsonPostRepositoryImpl implements PostRepository {
     private final String filePath = "posts.json";
 
     public GsonPostRepositoryImpl() {
+        FileUtil.createFile(filePath);
     }
 
     @Override

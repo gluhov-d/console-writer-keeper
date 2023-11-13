@@ -15,7 +15,9 @@ public class GsonWriterRepositoryImpl implements WriterRepository {
 
     private final String filePath = "writers.json";
 
-    public GsonWriterRepositoryImpl() {}
+    public GsonWriterRepositoryImpl() {
+        FileUtil.createFile(filePath);
+    }
 
     @Override
     public Writer save(Writer writer) {

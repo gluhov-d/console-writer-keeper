@@ -44,4 +44,19 @@ public class Writer extends BaseEntity{
     public void setPostsId(List<Long> postsId) {
         this.postsId = postsId;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("id: " + id + " ; first name: " + firstName + " ; last name: " + lastName + " ; status: " + status + " posts id: [ ");
+        if (postsId != null) {
+            for (int i = 0; i < postsId.size(); i++) {
+                sb.append(postsId.get(i));
+                if (i != postsId.size()-1) {
+                    sb.append(" , ");
+                }
+            }
+        }
+        sb.append(" ]");
+        return sb.toString();
+    }
 }

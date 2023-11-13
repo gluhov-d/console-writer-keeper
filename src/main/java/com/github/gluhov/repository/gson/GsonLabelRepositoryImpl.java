@@ -15,6 +15,7 @@ public class GsonLabelRepositoryImpl implements LabelRepository {
     private final String filePath = "labels.json";
 
     public GsonLabelRepositoryImpl() {
+        FileUtil.createFile(filePath);
     }
 
     @Override

@@ -25,20 +25,24 @@ public class FileUtil {
 
     public static <T> List<T> readFromFile(String filePath, Type typeOf) {
         File file = new File(resourceDirectory, filePath);
-        if (!file.exists()) {
-            try{
-                file.createNewFile();
-                writeToFile(filePath, new ArrayList<>());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-        }
         try (FileReader reader = new FileReader(file)) {
             return gson.fromJson(reader, typeOf);
         } catch (IOException e) {
             e.printStackTrace();
             return Collections.emptyList();
+        }
+    }
+
+    public static void createFile(String filePath) {
+        File file = new File(resourceDirectory, filePath);
+        try{
+            if (file.exists()) {
+                file.delete();
+            }
+            file.createNewFile();
+            writeToFile(filePath, new ArrayList<>());
+        } catch (IOException ex) {
+            System.out.println("Can not delete and create file." + ex.getMessage());
         }
     }
 }
