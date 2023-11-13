@@ -56,7 +56,7 @@ public class MainView {
                 }
             }
         } catch (IOException ex) {
-            System.out.println("Number Format Exception. Try again.");
+            System.out.println("IO Exception. Try again.");
         }
     }
 }

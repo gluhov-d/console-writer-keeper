@@ -18,7 +18,6 @@ public class LabelView {
     }
 
     public void displayMenu() throws IOException {
-        try {
             while (true) {
                 System.out.println("--- Label menu ---");
                 System.out.println("1. View label");
@@ -101,10 +100,5 @@ public class LabelView {
                     default -> System.out.println("Invalid choice. Please try again.");
                 }
             }
-        } catch (NumberFormatException ex) {
-            System.out.println("--- Operation result ---");
-            System.out.println("Number format exception. Try Again.");
-            System.out.println();
-        }
     }
 }

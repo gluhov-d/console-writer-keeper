@@ -21,7 +21,6 @@ public class WriterView {
     }
 
     public void displayMenu() throws IOException {
-        try {
             outer:
             while(true) {
                 System.out.println("--- Writer menu ---");
@@ -152,11 +151,6 @@ public class WriterView {
                     default -> System.out.println("Invalid choice. Please try again.");
                 }
             }
-        } catch (NumberFormatException ex) {
-            System.out.println("--- Operation result ---");
-            System.out.println("Number format exception. Try again.");
-            System.out.println();
-        }
 
     }
 }
