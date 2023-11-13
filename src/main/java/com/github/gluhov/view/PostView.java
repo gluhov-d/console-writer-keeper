@@ -104,7 +104,7 @@ public class PostView {
                                         System.out.println("--- Operation result ---");
                                         System.out.println("No label with such id");
                                         System.out.println();
-                                        break;
+                                        break outer;
                                     }
                                 }
                             }

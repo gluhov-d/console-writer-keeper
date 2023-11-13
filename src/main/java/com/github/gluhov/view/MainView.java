@@ -34,6 +34,7 @@ public class MainView {
             WriterView writerView = new WriterView(br, writerController);
             PostView postView = new PostView(br, postController);
             LabelView labelView = new LabelView(br, labelController);
+            ConsoleUtil.writeEmptyLines();
             while (true) {
                 System.out.println("--- Writer keeper menu ---");
                 System.out.println("1. Writers menu");

@@ -22,6 +22,7 @@ public class WriterView {
 
     public void displayMenu() throws IOException {
         try {
+            outer:
             while(true) {
                 System.out.println("--- Writer menu ---");
                 System.out.println("1. View writer with posts");
@@ -65,7 +66,7 @@ public class WriterView {
                                     System.out.println("--- Operation result ---");
                                     System.out.println("No post with such id");
                                     System.out.println();
-                                    break;
+                                    break outer;
                                 }
                             }
                         }
@@ -101,7 +102,7 @@ public class WriterView {
                                         System.out.println("--- Operation result ---");
                                         System.out.println("No post with such id");
                                         System.out.println();
-                                        break;
+                                        break outer;
                                     }
                                 }
                             }
