@@ -1,57 +1,36 @@
 package com.github.gluhov.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
+@NoArgsConstructor
+@Getter
+@Setter
 public class Writer extends BaseEntity{
     private String firstName;
     private String lastName;
-    private List<Long> postsId;
+    private transient List<Post> posts;
 
-    public Writer(String firstName, String lastName, List<Long> postsId, Status status) {
-        super(status);
+    public Writer(Long id, Status status, String firstName, String lastName) {
+        super(id, status);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.postsId = postsId;
-    }
-
-    public Writer() {
     }
 
     public Writer(Writer w) {
-        this(w.firstName, w.lastName, w.postsId, w.getStatus());
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public List<Long> getPostsId() {
-        return postsId;
-    }
-
-    public void setPostsId(List<Long> postsId) {
-        this.postsId = postsId;
+        this(w.id, w.status, w.firstName, w.lastName);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("id: " + id + " ; first name: " + firstName + " ; last name: " + lastName + " ; status: " + status + " posts id: [ ");
-        if (postsId != null) {
-            for (int i = 0; i < postsId.size(); i++) {
-                sb.append(postsId.get(i));
-                if (i != postsId.size()-1) {
+        StringBuilder sb = new StringBuilder("id: " + id + " ; first name: " + firstName + " ; last name: " + lastName + " ; status: " + status + "; posts id: [ ");
+        if (posts != null) {
+            for (int i = 0; i < posts.size(); i++) {
+                sb.append(posts.get(i));
+                if (i != posts.size()-1) {
                     sb.append(" , ");
                 }
             }

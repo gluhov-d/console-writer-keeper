@@ -2,10 +2,9 @@ package com.github.gluhov.controller;
 
 import com.github.gluhov.model.Status;
 import com.github.gluhov.model.Writer;
-import com.github.gluhov.repository.gson.GsonPostRepositoryImpl;
-import com.github.gluhov.repository.gson.GsonWriterRepositoryImpl;
+import com.github.gluhov.repository.PostRepository;
+import com.github.gluhov.repository.WriterRepository;
 import com.github.gluhov.service.WriterService;
-import com.github.gluhov.to.WriterWithPosts;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +12,10 @@ import java.util.stream.Collectors;
 
 public class WriterController {
     private final WriterService writerService;
-    private final GsonWriterRepositoryImpl writerRepository;
+    private final WriterRepository writerRepository;
+    private final PostRepository postRepository;
 
-    private final GsonPostRepositoryImpl postRepository;
-
-    public WriterController(WriterService writerService, GsonWriterRepositoryImpl writerRepository, GsonPostRepositoryImpl postRepository) {
+    public WriterController(WriterService writerService, WriterRepository writerRepository, PostRepository postRepository) {
         this.writerService = writerService;
         this.writerRepository = writerRepository;
         this.postRepository = postRepository;
@@ -27,24 +25,24 @@ public class WriterController {
         return writerRepository.getById(id);
     }
 
-    public Optional<WriterWithPosts> getWithPostsAndLabels(Long id) {
+    public Optional<Writer> getWithPostsAndLabels(Long id) {
         return writerService.getWriterWithPosts(id);
     }
 
-    public boolean checkPost(Long id) {
-        return postRepository.checkPost(id).isPresent();
+    public boolean checkIfExists(Long id) {
+        return postRepository.checkIfExists(id);
     }
 
     public void delete(Long id) {
         writerRepository.deleteById(id);
     }
 
-    public void update(Writer w) {
-        writerRepository.save(w);
+    public void updateWithPosts(Writer w, List<Long> writersId) {
+        writerService.saveWriterWithPosts(w, writersId);
     }
 
-    public Writer createWithPosts(Writer w) {
-        return writerRepository.save(w);
+    public Writer createWithPosts(Writer w, List<Long> postsId) {
+        return writerService.saveWriterWithPosts(w, postsId);
     }
 
     public List<Writer> findAll() {

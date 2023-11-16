@@ -14,23 +14,32 @@ import java.util.stream.Collectors;
 public class GsonLabelRepositoryImpl implements LabelRepository {
     private final String filePath = "labels.json";
 
-    public GsonLabelRepositoryImpl() {
-        FileUtil.createFile(filePath);
+    private List<Label> readLabelsFromFile() {
+        return FileUtil.readFromFile(filePath, new TypeToken<List<Label>>(){}.getType());
+    }
+
+
+    private void writeLabelsToFile(List<Label> labels) {
+        FileUtil.writeToFile(filePath, labels);
+    }
+
+    private Long generateIncrementedId(List<Label> labels) {
+        return labels.stream().mapToLong(Label::getId).max().orElse(0) + 1;
     }
 
     @Override
     public Label save(Label label) {
-        List<Label> labels = findAll();
+
+        List<Label> labels = readLabelsFromFile();
         if (label.getId() == null) {
-            label = new Label(label);
+            label.setId(generateIncrementedId(labels));
             labels.add(label);
         } else {
-            Label finalLabel = label;
             labels = labels.stream()
-                    .map(l -> Objects.equals(l.getId(), finalLabel.getId()) ? finalLabel : l)
+                    .map(l -> Objects.equals(l.getId(), label.getId()) ? label : l)
                     .collect(Collectors.toList());
         }
-        FileUtil.writeToFile(filePath, labels);
+        writeLabelsToFile(labels);
         return label;
     }
 
@@ -43,17 +52,29 @@ public class GsonLabelRepositoryImpl implements LabelRepository {
 
     @Override
     public void deleteById(Long id) {
-        List<Label> labels = findAll();
-        labels.forEach(label -> {
-            if (label.getId().equals(id)) {
-                label.setStatus(Status.DELETED);
-            }
-        });
-        FileUtil.writeToFile(filePath, labels);
+        List<Label> labels = readLabelsFromFile().stream()
+                .peek(l -> {
+                    if (l.getId().equals(id)) {
+                        l.setStatus(Status.DELETED);
+                    }
+                }).collect(Collectors.toList());
+        writeLabelsToFile(labels);
     }
 
     @Override
     public List<Label> findAll() {
-        return FileUtil.readFromFile(filePath, new TypeToken<List<Label>>(){}.getType());
+        return readLabelsFromFile();
+    }
+
+    @Override
+    public void saveAll(List<Label> labels) {
+        writeLabelsToFile(labels);
+    }
+
+
+    @Override
+    public Boolean checkIfExists(Long id) {
+        return readLabelsFromFile().stream()
+                .anyMatch(l -> l.getId().equals(id));
     }
 }

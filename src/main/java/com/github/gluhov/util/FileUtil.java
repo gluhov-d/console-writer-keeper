@@ -25,6 +25,9 @@ public class FileUtil {
 
     public static <T> List<T> readFromFile(String filePath, Type typeOf) {
         File file = new File(resourceDirectory, filePath);
+        if (!file.exists()) {
+            createFile(filePath);
+        }
         try (FileReader reader = new FileReader(file)) {
             return gson.fromJson(reader, typeOf);
         } catch (IOException e) {
@@ -36,10 +39,9 @@ public class FileUtil {
     public static void createFile(String filePath) {
         File file = new File(resourceDirectory, filePath);
         try{
-            if (file.exists()) {
-                file.delete();
+            if (!file.createNewFile()) {
+                System.err.println("File already exists");
             }
-            file.createNewFile();
             writeToFile(filePath, new ArrayList<>());
         } catch (IOException ex) {
             System.out.println("Can not delete and create file." + ex.getMessage());

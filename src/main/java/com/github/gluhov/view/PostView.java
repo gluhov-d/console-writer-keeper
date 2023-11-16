@@ -1,8 +1,8 @@
 package com.github.gluhov.view;
 
 import com.github.gluhov.controller.PostController;
+import com.github.gluhov.model.Label;
 import com.github.gluhov.model.Post;
-import com.github.gluhov.to.PostWithLabels;
 import com.github.gluhov.util.ConsoleUtil;
 
 import java.io.BufferedReader;
@@ -37,7 +37,7 @@ public class PostView {
                     case 1 -> {
                         System.out.print("Id: ");
                         Long id = Long.parseLong(br.readLine());
-                        Optional<PostWithLabels> post = postController.getWithWritersAndLabels(id);
+                        Optional<Post> post = postController.getWithLabels(id);
                         ConsoleUtil.writeEmptyLines();
                         System.out.println("--- Operation result ---");
                         if (post.isPresent()) {
@@ -52,15 +52,15 @@ public class PostView {
                         String title = br.readLine();
                         System.out.print("Post content:");
                         String content = br.readLine();
-                        List<Long> labelsId = new ArrayList<>();
+                        List<Long> labels = new ArrayList<>();
                         System.out.print("Labels ids (use spaces as delimiter):");
                         String line = br.readLine();
                         if (!line.isEmpty()) {
                             String[] ids = line.split(" ");
                             for (String labelId : ids) {
                                 Long lId = Long.parseLong(labelId);
-                                if (postController.checkLabel(lId)) {
-                                    labelsId.add(lId);
+                                if (postController.checkIfExists(lId)) {
+                                    labels.add(lId);
                                 } else {
                                     System.out.println("--- Operation result ---");
                                     System.out.println("No label with such id");
@@ -73,9 +73,8 @@ public class PostView {
                         Post createdPost = new Post();
                         createdPost.setTitle(title);
                         createdPost.setContent(content);
-                        createdPost.setLabelsId(labelsId);
                         ConsoleUtil.writeEmptyLines();
-                        Post created = postController.createWithLabels(createdPost);
+                        Post created = postController.createWithLabels(createdPost, labels);
                         System.out.println("--- Operation result ---");
                         System.out.println("Post created: ");
                         System.out.println(created);
@@ -90,15 +89,15 @@ public class PostView {
                             String updatedTitle = br.readLine();
                             System.out.print("Content: ");
                             String updatedContent = br.readLine();
-                            List<Long> labelsIds = new ArrayList<>();
+                            List<Label> updatedLabels = new ArrayList<>();
                             System.out.print("Labels ids (use spaces as delimiter):");
                             String updatedLine = br.readLine();
                             if (!updatedLine.isEmpty()) {
                                 String[] updatedLabelsIds = updatedLine.split(" ");
                                 for (String updatedId : updatedLabelsIds) {
                                     Long ulId = Long.parseLong(updatedId);
-                                    if (postController.checkLabel(ulId)) {
-                                        labelsIds.add(ulId);
+                                    if (postController.checkIfExists(ulId)) {
+                                        updatedLabels.add(new Label(ulId));
                                     } else {
                                         System.out.println("--- Operation result ---");
                                         System.out.println("No label with such id");
@@ -109,7 +108,7 @@ public class PostView {
                             }
                             updatedPost.get().setTitle(updatedTitle);
                             updatedPost.get().setContent(updatedContent);
-                            updatedPost.get().setLabelsId(labelsIds);
+                            updatedPost.get().setLabels(updatedLabels);
                             postController.update(updatedPost.get());
                             System.out.println("--- Operation result ---");
                             System.out.println("Post updated.");

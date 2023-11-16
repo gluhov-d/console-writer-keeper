@@ -2,7 +2,6 @@ package com.github.gluhov.view;
 
 import com.github.gluhov.controller.WriterController;
 import com.github.gluhov.model.Writer;
-import com.github.gluhov.to.WriterWithPosts;
 import com.github.gluhov.util.ConsoleUtil;
 
 import java.io.BufferedReader;
@@ -37,7 +36,7 @@ public class WriterView {
                     case 1 -> {
                         System.out.print("Id: ");
                         Long id = Long.parseLong(br.readLine());
-                        Optional<WriterWithPosts> writer = writerController.getWithPostsAndLabels(id);
+                        Optional<Writer> writer = writerController.getWithPostsAndLabels(id);
                         ConsoleUtil.writeEmptyLines();
                         System.out.println("--- Operation result ---");
                         if (writer.isPresent()) {
@@ -52,15 +51,15 @@ public class WriterView {
                         String firstName = br.readLine();
                         System.out.print("Last name:");
                         String lastName = br.readLine();
-                        List<Long> postsId = new ArrayList<>();
+                        List<Long> posts = new ArrayList<>();
                         System.out.print("Posts ids (use spaces as delimiter):");
                         String line = br.readLine();
                         if (!line.isEmpty()) {
                             String[] postIds = line.split(" ");
                             for (String postId : postIds) {
                                 Long pId = Long.parseLong(postId);
-                                if (writerController.checkPost(pId)) {
-                                    postsId.add(pId);
+                                if (writerController.checkIfExists(pId)) {
+                                    posts.add(pId);
                                 } else {
                                     System.out.println("--- Operation result ---");
                                     System.out.println("No post with such id");
@@ -73,8 +72,7 @@ public class WriterView {
                         Writer createdWriter = new Writer();
                         createdWriter.setFirstName(firstName);
                         createdWriter.setLastName(lastName);
-                        createdWriter.setPostsId(postsId);
-                        Writer created = writerController.createWithPosts(createdWriter);
+                        Writer created = writerController.createWithPosts(createdWriter, posts);
                         System.out.println("--- Operation result ---");
                         System.out.println("Writer created");
                         System.out.println(created);
@@ -88,15 +86,15 @@ public class WriterView {
                             String updatedFirstName = br.readLine();
                             System.out.print("Last name: ");
                             String updatedLastName = br.readLine();
-                            List<Long> postsIds = new ArrayList<>();
+                            List<Long> updatedPosts = new ArrayList<>();
                             System.out.print("Writers ids (use spaces as delimiter):");
                             String updatedLine = br.readLine();
                             if (!updatedLine.isEmpty()) {
                                 String[] updatedPostsIds = updatedLine.split(" ");
                                 for (String updatedId : updatedPostsIds) {
                                     Long upId = Long.parseLong(updatedId);
-                                    if (writerController.checkPost(upId)) {
-                                        postsIds.add(upId);
+                                    if (writerController.checkIfExists(upId)) {
+                                        updatedPosts.add(upId);
                                     } else {
                                         System.out.println("--- Operation result ---");
                                         System.out.println("No post with such id");
@@ -107,8 +105,7 @@ public class WriterView {
                             }
                             updatedWriter.get().setFirstName(updatedFirstName);
                             updatedWriter.get().setLastName(updatedLastName);
-                            updatedWriter.get().setPostsId(postsIds);
-                            writerController.update(updatedWriter.get());
+                            writerController.updateWithPosts(updatedWriter.get(),updatedPosts);
                             System.out.println("--- Operation result ---");
                             System.out.println("Writer updated.");
                         } else {

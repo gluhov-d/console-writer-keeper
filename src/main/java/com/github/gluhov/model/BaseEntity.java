@@ -1,31 +1,22 @@
 package com.github.gluhov.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Objects;
 
+@AllArgsConstructor
+@Getter
+@Setter
 public abstract class BaseEntity {
-    private static long idCounter = 0;
     protected Long id;
     protected Status status;
 
-    public BaseEntity(Status status) {
-        this.id = ++idCounter;
-        this.status = status;
-    }
+    public BaseEntity(Long id) { this.id = id; }
 
     public BaseEntity() {
         this.status = Status.ACTIVE;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
     }
 
     @Override

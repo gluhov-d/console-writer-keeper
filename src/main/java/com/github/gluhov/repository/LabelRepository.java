@@ -2,11 +2,8 @@ package com.github.gluhov.repository;
 
 import com.github.gluhov.model.Label;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface LabelRepository extends GenericRepository<Label, Long> {
-
-    default Optional<Label> checkLabel(Long id) {
-        return getById(id);
-    }
+    void saveAll(List<Label> labels);
 }

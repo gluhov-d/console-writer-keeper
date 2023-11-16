@@ -12,4 +12,6 @@ public interface GenericRepository<T, ID> {
     T save(T entity);
 
     List<T> findAll();
+
+    Boolean checkIfExists(ID id);
 }

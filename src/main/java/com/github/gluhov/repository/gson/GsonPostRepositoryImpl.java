@@ -14,23 +14,28 @@ import java.util.stream.Collectors;
 public class GsonPostRepositoryImpl implements PostRepository {
     private final String filePath = "posts.json";
 
-    public GsonPostRepositoryImpl() {
-        FileUtil.createFile(filePath);
+    private List<Post> readPostsFromFile() {
+        return FileUtil.readFromFile(filePath, new TypeToken<List<Post>>(){}.getType());
+    }
+
+    private void writePostsToFile(List<Post> posts) { FileUtil.writeToFile(filePath, posts);}
+
+    private Long generateIncrementedId(List<Post> posts) {
+        return posts.stream().mapToLong(Post::getId).max().orElse(0) + 1;
     }
 
     @Override
     public Post save(Post post) {
-        List<Post> posts = findAll();
+        List<Post> posts = readPostsFromFile();
         if (post.getId() == null) {
-            post = new Post(post);
+            post.setId(generateIncrementedId(posts));
             posts.add(post);
         } else {
-            Post finalPost = post;
             posts = posts.stream()
-                    .map(p -> Objects.equals(p.getId(), finalPost.getId()) ? finalPost : p)
+                    .map(p -> Objects.equals(p.getId(), post.getId()) ? post : p)
                     .collect(Collectors.toList());
         }
-        FileUtil.writeToFile(filePath, posts);
+        writePostsToFile(posts);
         return post;
     }
 
@@ -43,17 +48,26 @@ public class GsonPostRepositoryImpl implements PostRepository {
 
     @Override
     public void deleteById(Long id) {
-        List<Post> posts = findAll();
-        posts.forEach(post -> {
-            if (post.getId().equals(id)) {
-                post.setStatus(Status.DELETED);
-            }
-        });
-        FileUtil.writeToFile(filePath, posts);
+        List<Post> posts = readPostsFromFile().stream()
+                        .peek((p -> {
+                            if (p.getId().equals(id)) {
+                                p.setStatus(Status.DELETED);
+                            }
+                        })).collect(Collectors.toList());
+        writePostsToFile(posts);
     }
 
     @Override
-    public List<Post> findAll() {
-        return FileUtil.readFromFile(filePath, new TypeToken<List<Post>>(){}.getType());
+    public Boolean checkIfExists(Long id) {
+        return readPostsFromFile().stream()
+                .anyMatch(p -> p.getId().equals(id));
+    }
+
+    @Override
+    public List<Post> findAll() { return readPostsFromFile();}
+
+    @Override
+    public void saveAll(List<Post> posts) {
+        writePostsToFile(posts);
     }
 }

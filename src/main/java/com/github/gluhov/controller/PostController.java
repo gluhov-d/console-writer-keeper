@@ -2,10 +2,9 @@ package com.github.gluhov.controller;
 
 import com.github.gluhov.model.Post;
 import com.github.gluhov.model.Status;
-import com.github.gluhov.repository.gson.GsonLabelRepositoryImpl;
-import com.github.gluhov.repository.gson.GsonPostRepositoryImpl;
+import com.github.gluhov.repository.LabelRepository;
+import com.github.gluhov.repository.PostRepository;
 import com.github.gluhov.service.PostService;
-import com.github.gluhov.to.PostWithLabels;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,20 +12,20 @@ import java.util.stream.Collectors;
 
 public class PostController {
     private final PostService postService;
-    private final GsonPostRepositoryImpl postRepository;
-    private final GsonLabelRepositoryImpl labelRepository;
+    private final PostRepository postRepository;
+    private final LabelRepository labelRepository;
 
-    public PostController(PostService postService, GsonPostRepositoryImpl gsonPostRepository, GsonLabelRepositoryImpl gsonLabelRepository) {
+    public PostController(PostService postService, PostRepository postRepository, LabelRepository labelRepository) {
         this.postService = postService;
-        this.postRepository = gsonPostRepository;
-        this.labelRepository = gsonLabelRepository;
+        this.postRepository = postRepository;
+        this.labelRepository = labelRepository;
     }
 
     public Optional<Post> get(Long id) {
         return postRepository.getById(id);
     }
 
-    public Optional<PostWithLabels> getWithWritersAndLabels(Long id) {
+    public Optional<Post> getWithLabels(Long id) {
         return postService.getPostWithLabels(id);
     }
 
@@ -38,12 +37,12 @@ public class PostController {
         postRepository.save(p);
     }
 
-    public boolean checkLabel(Long id) {
-        return labelRepository.checkLabel(id).isPresent();
+    public boolean checkIfExists(Long id) {
+        return labelRepository.checkIfExists(id);
     }
 
-    public Post createWithLabels(Post p) {
-        return postRepository.save(p);
+    public Post createWithLabels(Post p, List<Long> labelsId) {
+        return postService.savePostWithLabels(p, labelsId);
     }
 
     public List<Post> findAll() {

@@ -3,9 +3,13 @@ package com.github.gluhov.view;
 import com.github.gluhov.controller.LabelController;
 import com.github.gluhov.controller.PostController;
 import com.github.gluhov.controller.WriterController;
+import com.github.gluhov.repository.LabelRepository;
+import com.github.gluhov.repository.PostRepository;
+import com.github.gluhov.repository.WriterRepository;
 import com.github.gluhov.repository.gson.GsonLabelRepositoryImpl;
 import com.github.gluhov.repository.gson.GsonPostRepositoryImpl;
 import com.github.gluhov.repository.gson.GsonWriterRepositoryImpl;
+import com.github.gluhov.service.LabelService;
 import com.github.gluhov.service.PostService;
 import com.github.gluhov.service.WriterService;
 import com.github.gluhov.util.ConsoleUtil;
@@ -19,14 +23,15 @@ public class MainView {
     private final PostController postController;
     private final LabelController labelController;
     public MainView() {
-        GsonWriterRepositoryImpl gsonWriterRepositoryImpl = new GsonWriterRepositoryImpl();
-        GsonPostRepositoryImpl gsonPostRepositoryImpl = new GsonPostRepositoryImpl();
-        GsonLabelRepositoryImpl gsonLabelRepositoryImpl = new GsonLabelRepositoryImpl();
-        PostService postService = new PostService(gsonPostRepositoryImpl, gsonLabelRepositoryImpl);
-        WriterService writerService = new WriterService(gsonWriterRepositoryImpl, postService);
-        this.writerController = new WriterController(writerService, gsonWriterRepositoryImpl, gsonPostRepositoryImpl);
-        this.postController = new PostController(postService, gsonPostRepositoryImpl, gsonLabelRepositoryImpl);
-        this.labelController = new LabelController(gsonLabelRepositoryImpl);
+        WriterRepository writerRepository = new GsonWriterRepositoryImpl();
+        PostRepository postRepository = new GsonPostRepositoryImpl();
+        LabelRepository labelRepository = new GsonLabelRepositoryImpl();
+        LabelService labelService = new LabelService(labelRepository);
+        PostService postService = new PostService(postRepository, labelRepository, labelService);
+        WriterService writerService = new WriterService(writerRepository, postRepository, postService);
+        this.writerController = new WriterController(writerService, writerRepository, postRepository);
+        this.postController = new PostController(postService, postRepository, labelRepository);
+        this.labelController = new LabelController(labelRepository);
     }
 
     public void displayMenu() {
