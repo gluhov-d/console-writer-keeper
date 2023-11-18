@@ -13,8 +13,6 @@ public abstract class BaseEntity {
     protected Long id;
     protected Status status;
 
-    public BaseEntity(Long id) { this.id = id; }
-
     public BaseEntity() {
         this.status = Status.ACTIVE;
     }

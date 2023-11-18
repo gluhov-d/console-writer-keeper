@@ -25,24 +25,16 @@ public class PostController {
         return postRepository.getById(id);
     }
 
-    public Optional<Post> getWithLabels(Long id) {
-        return postService.getPostWithLabels(id);
-    }
-
     public void delete(Long id) {
         postRepository.deleteById(id);
     }
 
-    public void update(Post p) {
-        postRepository.save(p);
+    public Post saveWithLabels(Post p, List<Long> labelsId) {
+        return postService.saveWithLabels(p, labelsId);
     }
 
-    public boolean checkIfExists(Long id) {
+    public boolean checkIfLabelExists(Long id) {
         return labelRepository.checkIfExists(id);
-    }
-
-    public Post createWithLabels(Post p, List<Long> labelsId) {
-        return postService.savePostWithLabels(p, labelsId);
     }
 
     public List<Post> findAll() {

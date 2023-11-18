@@ -25,11 +25,7 @@ public class WriterController {
         return writerRepository.getById(id);
     }
 
-    public Optional<Writer> getWithPostsAndLabels(Long id) {
-        return writerService.getWriterWithPosts(id);
-    }
-
-    public boolean checkIfExists(Long id) {
+    public boolean checkIfPostExists(Long id) {
         return postRepository.checkIfExists(id);
     }
 
@@ -37,12 +33,8 @@ public class WriterController {
         writerRepository.deleteById(id);
     }
 
-    public void updateWithPosts(Writer w, List<Long> writersId) {
-        writerService.saveWriterWithPosts(w, writersId);
-    }
-
-    public Writer createWithPosts(Writer w, List<Long> postsId) {
-        return writerService.saveWriterWithPosts(w, postsId);
+    public Writer saveWithPosts(Writer w, List<Long> postsId) {
+        return writerService.saveWithPosts(w, postsId);
     }
 
     public List<Writer> findAll() {

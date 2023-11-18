@@ -65,9 +65,4 @@ public class GsonPostRepositoryImpl implements PostRepository {
 
     @Override
     public List<Post> findAll() { return readPostsFromFile();}
-
-    @Override
-    public void saveAll(List<Post> posts) {
-        writePostsToFile(posts);
-    }
 }

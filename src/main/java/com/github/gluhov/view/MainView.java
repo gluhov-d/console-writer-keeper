@@ -9,14 +9,12 @@ import com.github.gluhov.repository.WriterRepository;
 import com.github.gluhov.repository.gson.GsonLabelRepositoryImpl;
 import com.github.gluhov.repository.gson.GsonPostRepositoryImpl;
 import com.github.gluhov.repository.gson.GsonWriterRepositoryImpl;
-import com.github.gluhov.service.LabelService;
 import com.github.gluhov.service.PostService;
 import com.github.gluhov.service.WriterService;
 import com.github.gluhov.util.ConsoleUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class MainView {
     private final WriterController writerController;
@@ -26,19 +24,18 @@ public class MainView {
         WriterRepository writerRepository = new GsonWriterRepositoryImpl();
         PostRepository postRepository = new GsonPostRepositoryImpl();
         LabelRepository labelRepository = new GsonLabelRepositoryImpl();
-        LabelService labelService = new LabelService(labelRepository);
-        PostService postService = new PostService(postRepository, labelRepository, labelService);
-        WriterService writerService = new WriterService(writerRepository, postRepository, postService);
+        PostService postService = new PostService(postRepository, labelRepository);
+        WriterService writerService = new WriterService(writerRepository, postRepository);
         this.writerController = new WriterController(writerService, writerRepository, postRepository);
         this.postController = new PostController(postService, postRepository, labelRepository);
         this.labelController = new LabelController(labelRepository);
     }
 
     public void displayMenu() {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))){
-            WriterView writerView = new WriterView(br, writerController);
-            PostView postView = new PostView(br, postController);
-            LabelView labelView = new LabelView(br, labelController);
+        try (Scanner sc = new Scanner(System.in)){
+            WriterView writerView = new WriterView(sc, writerController);
+            PostView postView = new PostView(sc, postController);
+            LabelView labelView = new LabelView(sc, labelController);
             ConsoleUtil.writeEmptyLines();
             while (true) {
                 System.out.println("--- Writer keeper menu ---");
@@ -46,8 +43,7 @@ public class MainView {
                 System.out.println("2. Posts menu");
                 System.out.println("3. Labels menu");
                 System.out.println("6. Exit");
-                System.out.print("Choose an option: ");
-                int choice = Integer.parseInt(br.readLine());
+                int choice = ConsoleUtil.readInt(sc, "Choose an option: ");
                 ConsoleUtil.writeEmptyLines();
                 switch (choice) {
                     case 1 -> writerView.displayMenu();

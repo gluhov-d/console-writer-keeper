@@ -67,12 +67,6 @@ public class GsonLabelRepositoryImpl implements LabelRepository {
     }
 
     @Override
-    public void saveAll(List<Label> labels) {
-        writeLabelsToFile(labels);
-    }
-
-
-    @Override
     public Boolean checkIfExists(Long id) {
         return readLabelsFromFile().stream()
                 .anyMatch(l -> l.getId().equals(id));

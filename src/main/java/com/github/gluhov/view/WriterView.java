@@ -4,23 +4,22 @@ import com.github.gluhov.controller.WriterController;
 import com.github.gluhov.model.Writer;
 import com.github.gluhov.util.ConsoleUtil;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 public class WriterView {
-    private final BufferedReader br;
+    private final Scanner sc;
     private final WriterController writerController;
 
-    public WriterView(BufferedReader br, WriterController writerController) {
-        this.br = br;
+    public WriterView(Scanner sc, WriterController writerController) {
+        this.sc = sc;
         this.writerController = writerController;
     }
 
     public void displayMenu() throws IOException {
-            outer:
             while(true) {
                 System.out.println("--- Writer menu ---");
                 System.out.println("1. View writer with posts");
@@ -30,117 +29,14 @@ public class WriterView {
                 System.out.println("5. Find all writers");
                 System.out.println("6. Main menu");
                 System.out.print("Choose an option: ");
-                int choice = Integer.parseInt(br.readLine());
+                int choice = sc.nextInt();
                 ConsoleUtil.writeEmptyLines();
                 switch (choice) {
-                    case 1 -> {
-                        System.out.print("Id: ");
-                        Long id = Long.parseLong(br.readLine());
-                        Optional<Writer> writer = writerController.getWithPostsAndLabels(id);
-                        ConsoleUtil.writeEmptyLines();
-                        System.out.println("--- Operation result ---");
-                        if (writer.isPresent()) {
-                            System.out.println(writer.get());
-                        } else {
-                            System.out.println("No writer with such id");
-                        }
-                        System.out.println();
-                    }
-                    case 2 -> {
-                        System.out.print("First name:");
-                        String firstName = br.readLine();
-                        System.out.print("Last name:");
-                        String lastName = br.readLine();
-                        List<Long> posts = new ArrayList<>();
-                        System.out.print("Posts ids (use spaces as delimiter):");
-                        String line = br.readLine();
-                        if (!line.isEmpty()) {
-                            String[] postIds = line.split(" ");
-                            for (String postId : postIds) {
-                                Long pId = Long.parseLong(postId);
-                                if (writerController.checkIfExists(pId)) {
-                                    posts.add(pId);
-                                } else {
-                                    System.out.println("--- Operation result ---");
-                                    System.out.println("No post with such id");
-                                    System.out.println();
-                                    break outer;
-                                }
-                            }
-                        }
-                        ConsoleUtil.writeEmptyLines();
-                        Writer createdWriter = new Writer();
-                        createdWriter.setFirstName(firstName);
-                        createdWriter.setLastName(lastName);
-                        Writer created = writerController.createWithPosts(createdWriter, posts);
-                        System.out.println("--- Operation result ---");
-                        System.out.println("Writer created");
-                        System.out.println(created);
-                    }
-                    case 3 -> {
-                        System.out.print("Writer id: ");
-                        Long updatedWriterId = Long.parseLong(br.readLine());
-                        Optional<Writer> updatedWriter = writerController.get(updatedWriterId);
-                        if (updatedWriter.isPresent()) {
-                            System.out.print("First name: ");
-                            String updatedFirstName = br.readLine();
-                            System.out.print("Last name: ");
-                            String updatedLastName = br.readLine();
-                            List<Long> updatedPosts = new ArrayList<>();
-                            System.out.print("Writers ids (use spaces as delimiter):");
-                            String updatedLine = br.readLine();
-                            if (!updatedLine.isEmpty()) {
-                                String[] updatedPostsIds = updatedLine.split(" ");
-                                for (String updatedId : updatedPostsIds) {
-                                    Long upId = Long.parseLong(updatedId);
-                                    if (writerController.checkIfExists(upId)) {
-                                        updatedPosts.add(upId);
-                                    } else {
-                                        System.out.println("--- Operation result ---");
-                                        System.out.println("No post with such id");
-                                        System.out.println();
-                                        break outer;
-                                    }
-                                }
-                            }
-                            updatedWriter.get().setFirstName(updatedFirstName);
-                            updatedWriter.get().setLastName(updatedLastName);
-                            writerController.updateWithPosts(updatedWriter.get(),updatedPosts);
-                            System.out.println("--- Operation result ---");
-                            System.out.println("Writer updated.");
-                        } else {
-                            System.out.println("--- Operation result ---");
-                            System.out.println("No writer with such id");
-                        }
-                        System.out.println();
-                    }
-                    case 4 -> {
-                        System.out.print("Writer id: ");
-                        Long deleteId = Long.parseLong(br.readLine());
-                        try {
-                            writerController.delete(deleteId);
-                        } catch (Exception ex) {
-                            System.out.println("--- Operation result ---");
-                            System.out.println("No such writer, try again");
-                            break;
-                        }
-                        System.out.println("--- Operation result ---");
-                        System.out.println("Writer deleted");
-                        System.out.println();
-                    }
-                    case 5 -> {
-                        List<Writer> writers = writerController.findAll();
-                        System.out.println("--- Operation result ---");
-                        System.out.println("Available active writers: ");
-                        if (writers == null) {
-                            System.out.println("No posts available");
-                            break;
-                        }
-                        for (Writer w : writers) {
-                            System.out.println(w);
-                        }
-                        System.out.println();
-                    }
+                    case 1 -> view();
+                    case 2 -> create();
+                    case 3 -> update();
+                    case 4 -> delete();
+                    case 5 -> findAll();
                     case 6 -> {
                         System.out.println("Returning to main menu");
                         return;
@@ -149,5 +45,111 @@ public class WriterView {
                 }
             }
 
+    }
+
+    private void findAll() {
+        List<Writer> writers = writerController.findAll();
+        System.out.println("--- Operation result ---");
+        System.out.println("Available active writers: ");
+        if (writers == null) {
+            System.out.println("No posts available");
+        } else {
+            for (Writer w : writers) {
+                System.out.println(w);
+            }
+        }
+        System.out.println();
+    }
+
+    private void delete() {
+        System.out.print("Writer id: ");
+        Long deleteId = sc.nextLong();
+        try {
+            writerController.delete(deleteId);
+        } catch (Exception ex) {
+            System.out.println("--- Operation result ---");
+            System.out.println("No such writer, try again");
+        }
+        System.out.println("--- Operation result ---");
+        System.out.println("Writer deleted");
+        System.out.println();
+    }
+
+    private void update() {
+        Long updatedWriterId = ConsoleUtil.readLong(sc, "Id: ");
+        Optional<Writer> updatedWriter = writerController.get(updatedWriterId);
+        if (updatedWriter.isPresent()) {
+            System.out.print("First name: ");
+            String updatedFirstName = sc.next();
+            System.out.print("Last name: ");
+            String updatedLastName = sc.next();
+            List<Long> updatedPosts = new ArrayList<>();
+            System.out.println("Posts id (one on the line) or type '-1' to Exit:");
+            while(true) {
+                Long postId = ConsoleUtil.readLong(sc, "Post id: ");
+                if (postId == -1) {
+                    break;
+                }
+                if (writerController.checkIfPostExists(postId)) {
+                    updatedPosts.add(postId);
+                } else {
+                    System.out.println("--- Operation result ---");
+                    System.out.println("No post with such id");
+                    System.out.println();
+                }
+            }
+            updatedWriter.get().setFirstName(updatedFirstName);
+            updatedWriter.get().setLastName(updatedLastName);
+            Writer updated = writerController.saveWithPosts(updatedWriter.get(), updatedPosts);
+            System.out.println("--- Operation result ---");
+            System.out.println("Writer updated.");
+            System.out.println(updated);
+        } else {
+            System.out.println("--- Operation result ---");
+            System.out.println("No writer with such id");
+        }
+        System.out.println();
+    }
+
+    private void create() {
+        System.out.print("First name:");
+        String firstName = sc.next();
+        System.out.print("Last name:");
+        String lastName = sc.next();
+        List<Long> posts = new ArrayList<>();
+        System.out.println("Posts id (one on the line) or type '-1' to Exit:");
+        while(true) {
+            Long postId = ConsoleUtil.readLong(sc, "Post id: ");
+            if (postId == -1) {
+                break;
+            }
+            if (writerController.checkIfPostExists(postId)) {
+                posts.add(postId);
+            } else {
+                System.out.println("--- Operation result ---");
+                System.out.println("No post with such id");
+                System.out.println();
+            }
+        }
+        ConsoleUtil.writeEmptyLines();
+        Writer createdWriter = Writer.builder().firstName(firstName).lastName(lastName).build();
+        Writer created = writerController.saveWithPosts(createdWriter, posts);
+        System.out.println("--- Operation result ---");
+        System.out.println("Writer created");
+        System.out.println(created);
+    }
+
+    private void view() {
+        System.out.print("Id: ");
+        Long id = sc.nextLong();
+        Optional<Writer> writer = writerController.get(id);
+        ConsoleUtil.writeEmptyLines();
+        System.out.println("--- Operation result ---");
+        if (writer.isPresent()) {
+            System.out.println(writer.get());
+        } else {
+            System.out.println("No writer with such id");
+        }
+        System.out.println();
     }
 }

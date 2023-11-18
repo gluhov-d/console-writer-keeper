@@ -23,7 +23,7 @@ public class LabelController {
         labelRepository.deleteById(id);
     }
 
-    public Label create(Label l) { return labelRepository.save(l); }
+    public Label save(Label l) { return labelRepository.save(l); }
 
     public void update(Label l) {
         labelRepository.save(l);
