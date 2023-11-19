@@ -9,6 +9,13 @@ public class ConsoleUtil {
         }
     }
 
+    public static void printOperationResult(String msg) {
+        System.out.println("--- Operation result ---");
+        System.out.println(msg);
+        System.out.println();
+
+    }
+
     public static long readLong(Scanner sc, String msg) {
         boolean validInput = false;
         long inputLong = 0;

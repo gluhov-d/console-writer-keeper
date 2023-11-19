@@ -47,13 +47,7 @@ public class LabelView {
         Long id = ConsoleUtil.readLong(sc, "Id: ");
         Optional<Label> label = labelController.get(id);
         ConsoleUtil.writeEmptyLines();
-        System.out.println("--- Operation result ---");
-        if (label.isPresent()) {
-            System.out.println(label.get());
-        } else {
-            System.out.println("No label with such id");
-        }
-        System.out.println();
+        ConsoleUtil.printOperationResult(label.isPresent()?label.get().toString():"No label with such id");
     }
 
     private void create() {
@@ -61,8 +55,7 @@ public class LabelView {
         String labelName = sc.next();
         ConsoleUtil.writeEmptyLines();
         Label newLabel = Label.builder().name(labelName).build();
-        System.out.println("--- Operation result ---");
-        System.out.println("Label created");
+        ConsoleUtil.printOperationResult("Label created");
         System.out.println(labelController.save(newLabel));
         System.out.println();
     }
@@ -75,31 +68,23 @@ public class LabelView {
             String updatedName = sc.next();
             ConsoleUtil.writeEmptyLines();
             updatedLabel.get().setName(updatedName);
-            labelController.update(updatedLabel.get());
-            System.out.println("--- Operation result ---");
-            System.out.println("Label updated");
-            System.out.println();
+            labelController.save(updatedLabel.get());
+            ConsoleUtil.printOperationResult("Label updated");
         } else {
-            System.out.println("--- Operation result ---");
-            System.out.println("No label with such id");
-
+            ConsoleUtil.printOperationResult("No label with such id");
         }
-        System.out.println();
     }
 
     private void delete() {
         Long deleteId = ConsoleUtil.readLong(sc, "Label id: ");
         ConsoleUtil.writeEmptyLines();
         labelController.delete(deleteId);
-        System.out.println("--- Operation result ---");
-        System.out.println("label deleted");
-        System.out.println();
+        ConsoleUtil.printOperationResult("label deleted");
     }
 
     private void findAll() {
         List<Label> labels = labelController.findAll();
-        System.out.println("--- Operation result ---");
-        System.out.println("Available active labels: ");
+        ConsoleUtil.printOperationResult("Available active labels: ");
         for (Label l : labels) {
             System.out.println(l);
         }

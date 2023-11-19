@@ -1,5 +1,6 @@
 package com.github.gluhov.controller;
 
+import com.github.gluhov.model.Label;
 import com.github.gluhov.model.Post;
 import com.github.gluhov.model.Status;
 import com.github.gluhov.repository.LabelRepository;
@@ -33,13 +34,16 @@ public class PostController {
         return postService.saveWithLabels(p, labelsId);
     }
 
-    public boolean checkIfLabelExists(Long id) {
-        return labelRepository.checkIfExists(id);
+    public boolean checkLabelStatus(Long id) {
+        Optional<Label> label = labelRepository.getById(id);
+        return label.map(value -> value.getStatus().equals(Status.ACTIVE)).orElse(false);
     }
+
+    public boolean checkIfPostExists(Long id) { return postRepository.checkIfExists(id); }
 
     public List<Post> findAll() {
         return postRepository.findAll().stream()
-                .filter(w -> w.getStatus().equals(Status.ACTIVE))
+                .filter(p -> p.getStatus().equals(Status.ACTIVE))
                 .collect(Collectors.toList());
     }
 }

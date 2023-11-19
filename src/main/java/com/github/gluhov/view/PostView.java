@@ -47,8 +47,7 @@ public class PostView {
 
     private void findAll() {
         List<Post> posts = postController.findAll();
-        System.out.println("--- Operation result ---");
-        System.out.println("Available active posts: ");
+        ConsoleUtil.printOperationResult("Available active posts: ");
         if (posts == null) {
             System.out.println("No posts available");
         } else {
@@ -63,13 +62,7 @@ public class PostView {
         Long id = ConsoleUtil.readLong(sc, "Id: ");
         Optional<Post> post = postController.get(id);
         ConsoleUtil.writeEmptyLines();
-        System.out.println("--- Operation result ---");
-        if (post.isPresent()) {
-            System.out.println(post.get());
-        } else {
-            System.out.println("No post with such id");
-        }
-        System.out.println();
+        ConsoleUtil.printOperationResult(post.isPresent()?post.get().toString():"No post with such id");
     }
 
     private void create() {
@@ -77,28 +70,10 @@ public class PostView {
         String title = sc.next();
         System.out.print("Post content:");
         String content = sc.next();
-        List<Long> labels = new ArrayList<>();
-        System.out.println("Labels id (one on the line) or type '-1' to Exit:");
-        while(true) {
-            Long labelId = ConsoleUtil.readLong(sc, "Label id: ");
-            if (labelId == -1) {
-                break;
-            }
-            if (postController.checkIfLabelExists(labelId)) {
-                labels.add(labelId);
-            } else {
-                System.out.println("--- Operation result ---");
-                System.out.println("No label with such id");
-                System.out.println();
-            }
-        }
-        Post createdPost = new Post();
-        createdPost.setTitle(title);
-        createdPost.setContent(content);
+        List<Long> labels = readAllLabelsIds();
         ConsoleUtil.writeEmptyLines();
-        Post created = postController.saveWithLabels(createdPost, labels);
-        System.out.println("--- Operation result ---");
-        System.out.println("Post created: ");
+        Post created = postController.saveWithLabels(Post.builder().title(title).content(content).build(), labels);
+        ConsoleUtil.printOperationResult("Post created: ");
         System.out.println(created);
         System.out.println();
     }
@@ -111,43 +86,40 @@ public class PostView {
             String updatedTitle = sc.next();
             System.out.print("Content: ");
             String updatedContent = sc.next();
-            List<Long> updatedLabels = new ArrayList<>();
-            System.out.println("Labels id (one on the line) or type '-1' to Exit:");
-            while(true) {
-                Long labelId = ConsoleUtil.readLong(sc, "Label id: ");
-                if (labelId == -1) {
-                    break;
-                }
-                if (postController.checkIfLabelExists(labelId)) {
-                    updatedLabels.add(labelId);
-                } else {
-                    System.out.println("--- Operation result ---");
-                    System.out.println("No label with such id");
-                    System.out.println();
-                }
-            }
+            List<Long> updatedLabels = readAllLabelsIds();
             updatedPost.get().setTitle(updatedTitle);
             updatedPost.get().setContent(updatedContent);
             Post updated = postController.saveWithLabels(updatedPost.get(), updatedLabels);
-            System.out.println("--- Operation result ---");
-            System.out.println(updated);
+            ConsoleUtil.printOperationResult(updated.toString());
         } else {
-            System.out.println("--- Operation result ---");
-            System.out.println("No post with such id");
+            ConsoleUtil.printOperationResult("No post with such id");
         }
-        System.out.println();
     }
 
     private void delete(){
         Long deleteId = ConsoleUtil.readLong(sc, "Id: ");
-        try {
+        if (postController.checkIfPostExists(deleteId)) {
             postController.delete(deleteId);
-        } catch (Exception ex) {
-            System.out.println("--- Operation result ---");
-            System.out.println("No such writer, try again");
+            ConsoleUtil.printOperationResult("Post deleted");
+        } else {
+            ConsoleUtil.printOperationResult("No such writer, try again");
         }
-        System.out.println("--- Operation result ---");
-        System.out.println("Post deleted");
-        System.out.println();
+    }
+
+    private List<Long> readAllLabelsIds() {
+        List<Long> labels = new ArrayList<>();
+        System.out.println("Labels id (one on the line) or type '-1' to Exit:");
+        while(true) {
+            Long labelId = ConsoleUtil.readLong(sc, "Label id: ");
+            if (labelId == -1) {
+                break;
+            }
+            if (postController.checkLabelStatus(labelId)) {
+                labels.add(labelId);
+            } else {
+                ConsoleUtil.printOperationResult("No label with such id");
+            }
+        }
+        return labels;
     }
 }

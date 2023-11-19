@@ -25,10 +25,6 @@ public class LabelController {
 
     public Label save(Label l) { return labelRepository.save(l); }
 
-    public void update(Label l) {
-        labelRepository.save(l);
-    }
-
     public List<Label> findAll() {
         return labelRepository.findAll().stream()
                 .filter(l -> l.getStatus().equals(Status.ACTIVE))

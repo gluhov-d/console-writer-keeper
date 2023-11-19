@@ -1,5 +1,6 @@
 package com.github.gluhov.controller;
 
+import com.github.gluhov.model.Post;
 import com.github.gluhov.model.Status;
 import com.github.gluhov.model.Writer;
 import com.github.gluhov.repository.PostRepository;
@@ -25,9 +26,12 @@ public class WriterController {
         return writerRepository.getById(id);
     }
 
-    public boolean checkIfPostExists(Long id) {
-        return postRepository.checkIfExists(id);
+    public boolean checkPostStatus(Long id) {
+        Optional<Post> post = postRepository.getById(id);
+        return post.map(value -> value.getStatus().equals(Status.ACTIVE)).orElse(false);
     }
+
+    public boolean checkIfWriterExists(Long id) { return writerRepository.checkIfExists(id); }
 
     public void delete(Long id) {
         writerRepository.deleteById(id);
