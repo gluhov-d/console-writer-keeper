@@ -6,21 +6,16 @@ import com.github.gluhov.model.Writer;
 import com.github.gluhov.repository.PostRepository;
 import com.github.gluhov.repository.WriterRepository;
 import com.github.gluhov.service.WriterService;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@RequiredArgsConstructor
 public class WriterController {
     private final WriterService writerService;
     private final WriterRepository writerRepository;
     private final PostRepository postRepository;
-
-    public WriterController(WriterService writerService, WriterRepository writerRepository, PostRepository postRepository) {
-        this.writerService = writerService;
-        this.writerRepository = writerRepository;
-        this.postRepository = postRepository;
-    }
 
     public Optional<Writer> get(Long id) {
         return writerRepository.getById(id);

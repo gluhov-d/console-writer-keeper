@@ -5,8 +5,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Label extends BaseEntity{
     private String name;
 

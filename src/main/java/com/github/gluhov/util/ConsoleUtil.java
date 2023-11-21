@@ -43,7 +43,7 @@ public class ConsoleUtil {
                 inputInt = sc.nextInt();
                 validInput = true;
             } catch (java.util.InputMismatchException e) {
-                System.out.println("Invalid input. Please enter a valid long value.");
+                System.out.println("Invalid input. Please enter a valid int value.");
                 sc.nextLine();
             }
         }

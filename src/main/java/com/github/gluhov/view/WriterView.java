@@ -3,6 +3,7 @@ package com.github.gluhov.view;
 import com.github.gluhov.controller.WriterController;
 import com.github.gluhov.model.Writer;
 import com.github.gluhov.util.ConsoleUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,14 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 public class WriterView {
     private final Scanner sc;
     private final WriterController writerController;
-
-    public WriterView(Scanner sc, WriterController writerController) {
-        this.sc = sc;
-        this.writerController = writerController;
-    }
 
     public void displayMenu() throws IOException {
             while(true) {

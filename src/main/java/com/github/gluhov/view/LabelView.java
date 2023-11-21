@@ -3,19 +3,17 @@ package com.github.gluhov.view;
 import com.github.gluhov.controller.LabelController;
 import com.github.gluhov.model.Label;
 import com.github.gluhov.util.ConsoleUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 public class LabelView {
     private final Scanner sc;
     private final LabelController labelController;
-    public LabelView(Scanner sc, LabelController labelController) {
-        this.sc = sc;
-        this.labelController = labelController;
-    }
 
     public void displayMenu() throws IOException {
             while (true) {

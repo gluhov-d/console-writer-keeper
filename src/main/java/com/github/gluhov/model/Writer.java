@@ -7,8 +7,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class Writer extends BaseEntity{
     private String firstName;
     private String lastName;

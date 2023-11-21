@@ -4,11 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EqualsAndHashCode(callSuper = true)
 public class Post extends BaseEntity {
     private String title;
     private String content;

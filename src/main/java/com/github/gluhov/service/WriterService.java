@@ -4,18 +4,15 @@ import com.github.gluhov.model.Post;
 import com.github.gluhov.model.Writer;
 import com.github.gluhov.repository.PostRepository;
 import com.github.gluhov.repository.WriterRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class WriterService {
     private final WriterRepository writerRepository;
     private final PostRepository postRepository;
-
-    public WriterService(WriterRepository writerRepository, PostRepository postRepository) {
-        this.writerRepository = writerRepository;
-        this.postRepository = postRepository;
-    }
 
     public Writer saveWithPosts(Writer writer, List<Long> postsId) {
         List<Post> postsToSave = new ArrayList<>();

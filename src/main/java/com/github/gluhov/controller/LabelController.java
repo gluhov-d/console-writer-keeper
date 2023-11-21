@@ -3,17 +3,14 @@ package com.github.gluhov.controller;
 import com.github.gluhov.model.Label;
 import com.github.gluhov.model.Status;
 import com.github.gluhov.repository.LabelRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+@RequiredArgsConstructor
 public class LabelController {
     private final LabelRepository labelRepository;
-
-    public LabelController(LabelRepository labelRepository) {
-        this.labelRepository = labelRepository;
-    }
 
     public Optional<Label> get(Long id) {
         return labelRepository.getById(id);

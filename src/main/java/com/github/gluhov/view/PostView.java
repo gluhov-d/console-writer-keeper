@@ -3,6 +3,7 @@ package com.github.gluhov.view;
 import com.github.gluhov.controller.PostController;
 import com.github.gluhov.model.Post;
 import com.github.gluhov.util.ConsoleUtil;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,14 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+@RequiredArgsConstructor
 public class PostView {
     private final Scanner sc;
     private final PostController postController;
-
-    public PostView(Scanner sc, PostController postController) {
-        this.sc = sc;
-        this.postController = postController;
-    }
 
     public void displayMenu() throws IOException {
             while(true) {
